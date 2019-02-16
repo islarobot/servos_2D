@@ -58,38 +58,15 @@ funcion_conversion_node_ardu: function(data)
 
 data_object = JSON.parse(data);
 
-/// bytes: 1 para el parametro. 2 para el angulo+direccion 1 para el valor 0-100 
+var x_string = data_object.x;
 
-// P000l999
+var x_out = zeroFill(x_string,3);
 
-var param_string = data_object.inputParam;
+var y_string = data_object.y;
 
-//var param_code = String.fromCharCode(param_string);
+var y_out = zeroFill(y_string,3);
 
-var angle_string = data_object.inputAngle;
-
-var angle_int = parseInt(angle_string);
-
-var sign1 ='';
-
-if (angle_int<0) {
-	sign1 = 'p';
-}else {
-	sign1 = 'n';
-}
-
-
-
-var angle_int_abs = Math.abs(angle_int);
-
-var angle_out = zeroFill(angle_int_abs,3);
-
-//console.log(angle_out);
-
-var output = param_string+sign1+angle_out;
-
-//console.log(output);
-
+var output = x_out+y_out;
 
 return output;
 

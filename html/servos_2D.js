@@ -402,3 +402,38 @@ function getCursorPosition(canvas, event,vl,s,m) {
     
     
 }
+
+
+function regla_de_tres(input,min_in,max_in,min_out,max_out) {
+
+var output = (input - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
+
+
+return parseInt(output);
+
+}
+
+function draw_square(ctx){
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+ ctx.moveTo(300,0);
+		      ctx.lineTo(300,600);
+		      ctx.moveTo(0,300);
+		      ctx.lineTo(600,300);
+		      ctx.stroke();
+		      
+  //ctx.moveTo(600,0);
+		      
+		      
+		      
+}
+
+function draw_text(ctx,x,y,xx,yy)
+
+{
+
+ctx.font = "15px Arial";
+ctx.fillText(xx, x+10, y+8);
+ctx.fillText(yy, x+45, y+8);
+
+}
+

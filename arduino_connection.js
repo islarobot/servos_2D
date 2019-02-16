@@ -66,7 +66,7 @@ sp.on("data", function(data) {
 	var data_json = arduino_functions.funcion_conversion_ardu_node(data_string);
 	
 	if (data_json != 'NA') {
-			ipc.of.world.emit('message',data_json);
+			//ipc.of.world.emit('message',data_json);
 			//console.log(data_out_2);
 	}
   	 //console.log("---> 6 ---->  " + data_string);
@@ -85,6 +85,7 @@ sp.on("data", function(data) {
 ipc.of.world.on('connect',function(){console.log('ipc client connected');});
 ipc.of.world.on('message',function(data){
 
+console.log(data);
 
 var data_out = arduino_functions.funcion_conversion_node_ardu(data);
 
@@ -96,7 +97,7 @@ var data_out = arduino_functions.funcion_conversion_node_ardu(data);
 if(arduino_connect){
 	
 	
-	//console.log('node: '+data_out);
+	console.log('node: '+data_out);
 	sp.write(data_out+'\n');
 	
 	}

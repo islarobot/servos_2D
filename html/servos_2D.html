@@ -9,19 +9,20 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> 
         
         <script>
-        var radio = 500;       
+        
+       var radio = 600;
         var values_items = {
         	
         		min:280, 
         		max:80, 
         		param_in	:"A",   //hasta 255 
         		state:"set", 
-        		speed_transmision:50,
+        		speed_transmision:200,
         		min_value:0, 
         		max_value:10,        		
         		x_circum:radio*1.1111111,
         		y_circum:radio*1.0888888,
-        		w_square:1000,
+        		w_square:600,
         		h_square:600,
         		radius_circum:radio,
         		largo_pata:radio*0.0111111,
@@ -55,115 +56,51 @@
     
 	<script type="text/javascript">
 	
-
+	var x = 0;
+	var y = 0;
+	var xx = 0;
+	var yy = 0;
 	
 	var canvas = document.getElementById('myCanvas');
-
-			var valor_recibido;
-        		
-			var stream = new Array();
-			var stream_angles = new Array();        		        		
+            var socket = io.connect("localhost:8080"); 
+ 		        		
         		
 			canvas.width  = values_items.w_square;
 			canvas.height = values_items.h_square;;
 			var ctx = canvas.getContext('2d');	
+		   
+		   draw_square(ctx);
 		      
-		      
-        		//var last_angle = 0;
-       
-            var socket = io.connect("localhost:8080"); 
-            /*Initializing the connection with the server via websockets */
-            
-				//envío ángulos al arduino!!!
-				var min = circumB2circumA(values_items.min);
-				
-				
-				var max = values_items.max;
-				var amplitud = max - min;
-							
-				var direccion = 'r';
-				
-				//canvas.addEventListener("click", function (e) { getCursorPosition(canvas, e,values_items,socket,mode);});
-				
-				function interval_send(){ 
-				
-					var i_out = angulo_absoluto(i,amplitud)+10;
-					//console.log(i_out);
-	 	 			
-	 			  var msg_out = {inputParam:values_items.param_in,inputAngle:i_out}
+		     
+ 				
+ 				canvas.addEventListener("mousemove", on_canvas_click, false);
+
+ 			function on_canvas_click(ev) {
+    			x = ev.clientX - canvas.offsetLeft;
+    			y = ev.clientY - canvas.offsetTop;
+    			xx = regla_de_tres(x,0,600,180,0);
+    			yy = regla_de_tres(y,0,600,0,180);
+ 				//var msg_out = {x:xx,y:yy}
+ 				ctx.beginPath();
+				ctx.arc(x, y , 5, 0, 2 * Math.PI);
+				ctx.stroke();
+    			draw_square(ctx);
+    			draw_text(ctx,x,y,xx,yy);
+    			
+			}
+			
+			setInterval(function () {
+			
+								 	 			
+	 			  var msg_out = {x:xx,y:yy}
 	 			  
-	 			  angle_given_moment = i;
-	 			  direction_given:_moment = direccion;
-	 			  
+	  
 	 			  var msg_json = JSON.stringify(msg_out);
-	 			  if (start == true) {
-	 			  socket.emit('event', msg_json);	
-	 			  }
-	 			  
-	 			  //console.log('--0--  '+msg_out.inputAngle)
-  					
-  					if (i>=max) {direccion = 'l';}
-  					if (i<=min) {direccion = 'r';}
-  					
-  					//cambio de direccion cuando llego al min y al max.
-  					
-  					if (direccion=='r') {
-  					i = i + values_items.resolucion_grados;
-  					}else {
-  						i = i - values_items.resolucion_grados;
-  					}
-  						//speed_transmision es la velocidad a la que envio los angulos al ardu en ms.
-  					
-  					var angle1 = circumA2circumB(i);
-  					var repeated = 2;
-  					var tres_valores = {angle:angle1,direccion:direccion,valor:valor_recibido,repeated:repeated};
-  					stream.push(tres_valores);
-					stream_angles.push(angle1);
-  					if (stream.length > values_items.num_valores_delay) {
-							stream.shift();
-							stream_angles.shift();
-					}
-  					draw_basic_lines(ctx,values_items);					
-					draw_variable_lines(ctx,stream,stream_angles,values_items,angle1);
-  					
-  					
-	 				} 		            
-            
-					
-            
-            
-				//recibo mensajes del servidor!!!            
-				draw_basic_lines(ctx,values_items);
-            
-            socket.on("stream",function(message){  
-               
-					//console.log('---> 8 ----> '+message)
+	 			  console.log(msg_json);
+	 			  socket.emit('event', msg_json);
+				
 	
-                msg_in = JSON.parse(message);
-                					
-					var param_received = msg_in.inputParam;
-					
-					//console.log('--0--:'+msg_in.outputValue);
-											
-					valor_recibido = parseFloat(msg_in.outputValue).toFixed(2);
-
-
-
-					});
-					
-					var myTimer = setInterval(interval_send, values_items.speed_transmision);            
-
-            
-
- 
- 				
- 				//drawmarcas_sonar('myCanvas', 1000, 980, 2000, 1050, values_items, 900, 10, 15, 12, 10);
- 				
- 				//var test_angle_counter = 0;
- 				
- 				
- 				
- 				
+			}, values_items.speed_transmision);            
  				
 	</script>    
     
